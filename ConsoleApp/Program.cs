@@ -1,10 +1,13 @@
-﻿using System;
+﻿using BooksApp.Data;
+using BooksApp.Domain;
+using System;
+using System.Linq;
 
 namespace ConsoleApp
 {
     class Program
     {
-        
+        private static BooksContext context = new BooksContext();
 
         static void Main(string[] args)
         {
@@ -30,7 +33,7 @@ namespace ConsoleApp
                         DeleteAuthor();
                         break;
                     case 'V':
-                        ShowAuthors();
+                        ShowAuthors("Autores registrados");
                         break;
                     case 'S':
                         Console.WriteLine("Adiós. Programa finalizado.");
@@ -44,10 +47,26 @@ namespace ConsoleApp
 
     
         }
-        static void AddAuthor() 
-        { Console.WriteLine("Agregando un autor..."); }
-        static void ShowAuthors()
-        { Console.WriteLine("Mostrando autores..."); }
+        private static void AddAuthor() 
+        { Console.WriteLine("Agregando un autor...");
+            Console.WriteLine("Agregando un autor."); 
+            Console.Write("Nombres: "); 
+            string firstName = Console.ReadLine();
+            Console.Write("Apellidos: "); 
+            string lastName = Console.ReadLine(); 
+            var author = new Author 
+            {
+                FirstName = firstName, LastName = lastName
+            }; 
+            context.Authors.Add(author); context.SaveChanges();
+        }
+       
+        private static void ShowAuthors(string text)
+        { var authors = context.Authors.ToList();
+            Console.WriteLine($"{text}: Se han registrado {authors.Count} autores."); 
+            foreach (var author in authors)
+            { Console.WriteLine(author.FirstName + " " + author.LastName); }
+        }
 
         static void ModifyAuthor()
         { Console.WriteLine("Modificar un autor...."); }
